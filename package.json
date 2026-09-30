@@ -1,31 +1,16 @@
 {
-  "name": "smart-automation",
+  "name": "smart-automation-root",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "description": "Smart Automation Platform - Autonomous AI Workflow Studio (Monorepo)",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build:server": "npm --prefix server run build",
+    "build:client": "npm --prefix client run build",
+    "build": "npm run build:server && npm run build:client",
+    "start:server": "npm --prefix server run start",
+    "start:client": "npm --prefix client run preview"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.109.0",
-    "@xyflow/react": "^12.12.0",
-    "autoprefixer": "^10.6.1",
-    "lucide-react": "^1.49.0",
-    "postcss": "^8.5.28",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "tailwindcss": "^4.3.3",
-    "zod": "^4.6.5"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^4.3.4",
-    "oxlint": "^1.81.0",
-    "vite": "^6.0.0"
-  }
+  "keywords": ["ai", "automation", "gemini", "supabase", "reactflow"]
 }

@@ -27,6 +27,35 @@ export interface GeneratedWorkflow {
   edges: Array<{ id: string; source: string; target: string }>;
 }
 
+async function callGemini(contents: string, systemInstruction?: string) {
+  if (!aiClient) throw new Error('Gemini AI client not initialized');
+
+  const models = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  let lastError: any = null;
+
+  for (const model of models) {
+    try {
+      const response = await aiClient.models.generateContent({
+        model,
+        contents,
+        config: {
+          systemInstruction: systemInstruction || "You are Smart Automation Architect AI. Return valid JSON matching the schema.",
+          responseMimeType: "application/json",
+          temperature: 0.2,
+        },
+      });
+      return response;
+    } catch (err: any) {
+      lastError = err;
+      if (err.message?.includes('not found') || err.message?.includes('no longer available')) {
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastError;
+}
+
 export async function generateWorkflowStructure(userPrompt: string, domainHint?: string): Promise<GeneratedWorkflow> {
   if (aiClient && ENV.GEMINI_API_KEY) {
     try {
@@ -61,15 +90,10 @@ Rules:
 }
 `;
 
-      const response = await aiClient.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          systemInstruction: "You are Smart Automation Architect AI, an elite autonomous workflow systems engineer. Return ONLY valid JSON matching the exact schema requested.",
-          responseMimeType: "application/json",
-          temperature: 0.2,
-        },
-      });
+      const response = await callGemini(
+        prompt,
+        "You are Smart Automation Architect AI, an elite autonomous workflow systems engineer. Return ONLY valid JSON matching the exact schema requested."
+      );
 
       const parsed: GeneratedWorkflow = JSON.parse(response.text || '{}');
       return enrichWorkflowWithLayout(parsed);
@@ -101,20 +125,12 @@ Provide a diagnostic report as JSON:
 {
   "rootCause": "Clear explanation of why this step failed",
   "suggestedFix": "Concrete action required to resolve this issue",
-  "recommendedConfig": { ...recommended node config updates... },
+  "recommendedConfig": { "retryCount": 3, "timeoutMs": 5000 },
   "confidenceScore": 0.95
 }
 `;
 
-      const response = await aiClient.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          temperature: 0.1,
-        },
-      });
-
+      const response = await callGemini(prompt);
       return JSON.parse(response.text || '{}');
     } catch (err: any) {
       console.warn('Gemini diagnostic call failed:', err.message);
@@ -137,15 +153,7 @@ Instruction: ${instruction}
 Input Data: ${JSON.stringify(inputData, null, 2)}
 Respond with the transformed output in JSON format.
 `;
-      const response = await aiClient.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          temperature: 0.2,
-        },
-      });
-
+      const response = await callGemini(prompt);
       return JSON.parse(response.text || '{}');
     } catch (err: any) {
       console.warn('AI transformation failed, using mock transform:', err.message);
@@ -163,7 +171,6 @@ Respond with the transformed output in JSON format.
   };
 }
 
-// Add visual grid layout coordinates for React Flow canvas
 function enrichWorkflowWithLayout(wf: GeneratedWorkflow): GeneratedWorkflow {
   const nodes = (wf.nodes || []).map((node, idx) => ({
     ...node,
@@ -185,7 +192,6 @@ function enrichWorkflowWithLayout(wf: GeneratedWorkflow): GeneratedWorkflow {
   };
 }
 
-// Intelligent heuristic generator for natural language prompts
 function generateHeuristicWorkflow(prompt: string, domainHint?: string): GeneratedWorkflow {
   const lower = prompt.toLowerCase();
   let domain = domainHint || 'General Automation';
@@ -195,7 +201,6 @@ function generateHeuristicWorkflow(prompt: string, domainHint?: string): Generat
   const nodes: GeneratedNode[] = [];
   const edges: Array<{ id: string; source: string; target: string }> = [];
 
-  // Determine Trigger
   if (lower.includes('schedule') || lower.includes('every') || lower.includes('cron') || lower.includes('nightly')) {
     nodes.push({
       id: 'node-1',
@@ -220,7 +225,6 @@ function generateHeuristicWorkflow(prompt: string, domainHint?: string): Generat
     });
   }
 
-  // AI Transformation
   nodes.push({
     id: 'node-2',
     type: 'ai_transform',
@@ -232,7 +236,6 @@ function generateHeuristicWorkflow(prompt: string, domainHint?: string): Generat
   });
   edges.push({ id: 'e1-2', source: 'node-1', target: 'node-2' });
 
-  // Condition
   if (lower.includes('if') || lower.includes('filter') || lower.includes('critical') || lower.includes('urgent')) {
     nodes.push({
       id: 'node-3',
@@ -242,7 +245,6 @@ function generateHeuristicWorkflow(prompt: string, domainHint?: string): Generat
     });
     edges.push({ id: 'e2-3', source: 'node-2', target: 'node-3' });
 
-    // Action after condition
     nodes.push({
       id: 'node-4',
       type: 'action',
@@ -254,7 +256,6 @@ function generateHeuristicWorkflow(prompt: string, domainHint?: string): Generat
     });
     edges.push({ id: 'e3-4', source: 'node-3', target: 'node-4' });
   } else {
-    // Direct Action
     nodes.push({
       id: 'node-3',
       type: 'action',

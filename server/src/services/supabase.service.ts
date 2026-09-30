@@ -9,7 +9,7 @@ if (ENV.SUPABASE_URL && activeKey) {
   try {
     supabaseClient = createClient(ENV.SUPABASE_URL, activeKey, {
       auth: { persistSession: false },
-      realtime: { transport: ws },
+      realtime: { transport: ws as any },
     });
   } catch (err: any) {
     console.error('Failed to initialize Supabase client:', err.message);
