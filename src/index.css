@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@import '@xyflow/react/dist/style.css';
+
+:root {
+  --bg-primary: #080b0f;
+  --bg-secondary: #0e131b;
+  --bg-card: rgba(18, 24, 36, 0.75);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --accent-green: #3ecf8e;
+  --accent-blue: #38bdf8;
+  --font-main: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #080b0f;
+  color: #f8fafc;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(62, 207, 142, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 90% 90%, rgba(56, 189, 248, 0.08), transparent);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #080b0f;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* React Flow Canvas Customization */
+.react-flow__pane {
+  background: #090d14 !important;
+}
+.react-flow__background {
+  background-color: #080b0f !important;
+}
+.react-flow__edge-path {
+  stroke: #3ecf8e !important;
+  stroke-width: 2 !important;
+}
+.react-flow__handle {
+  background: #3ecf8e !important;
+  border: 2px solid #080b0f !important;
+  width: 10px !important;
+  height: 10px !important;
+}
+.react-flow__controls {
+  background: #0e131b !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+}
+.react-flow__controls-button {
+  background: #0e131b !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  fill: #94a3b8 !important;
+}
+.react-flow__controls-button:hover {
+  background: #1a2232 !important;
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Tailwind custom utilities if needed */
+.bg-dark-bg { background-color: #080b0f; }
+.bg-dark-surface { background-color: #0e131b; }
+.bg-dark-card { background-color: #131924; }
+.shadow-glow-brand { box-shadow: 0 0 25px rgba(62, 207, 142, 0.25); }
+.shadow-glow-cyan { box-shadow: 0 0 25px rgba(56, 189, 248, 0.25); }
+.text-brand-300 { color: #6ee7b7; }
+.text-brand-400 { color: #3ecf8e; }
+.bg-brand-400 { background-color: #3ecf8e; }
+.bg-brand-500 { background-color: #10b981; }
+.border-brand-400 { border-color: #3ecf8e; }
+.border-brand-500 { border-color: #10b981; }
